@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Regla para pedir la descripción de una serie -->
+    <category>
+        <pattern> De que va (la serie) <set>seriesnetflix</set> </pattern>
+        <template>
+            <srai>decode <map><name><star/></name>sinopsis</map></srai>
+        </template>
+    </category>
+    <category>
+        <pattern> De que va (la serie) * </pattern>
+        <template>
+            La serie <star/> no está en el catálogo.
+        </template>
+    </category>
+        <category>
+        <pattern> De que va (la serie) <set>seriesprime</set> </pattern>
+        <template>
+            <srai>decode <map><name><star/></name>sinopsis</map></srai>
+        </template>
+    </category>
+    <category>
+        <pattern> De que va (la serie) * </pattern>
+        <template>
+            La serie <star/> no está en el catálogo.
+        </template>
+    </category>
+        <!-- Regla para introducir un capitulo de una serie -->
+    <category>
+    <pattern> Introduce un nuevo capitulo de la temporada <set>number</set> de * </pattern>
+        <template>
+       <!-- Operaciones para verificar que existe lo que se pide -->
+        <think><set name="serie"><star index="2"/></set></think>
+        <think><set name="temporada"><star index="1"/></set></think>
+        <think><set name="topic">titcap</set></think>
+        Dime el titulo del capitulo
+        </template>
+    </category>
+    <!-- Pide el nombre de un capitulo -->
+    <topic name ="titcap">
+    <category>
+        <pattern> * </pattern>
+        <template>
+            <think><set name="titulo"><srai>code <star/></srai></set></think>
+            <think><set name="topic">durcap</set></think>
+            Dime la duracion del capitulo
+        </template>
+    </category>
+    </topic>
+    <topic name ="durcap">
+    <!-- Pide la duracion de un capitulo -->
+    <category>
+        <pattern><set>number</set></pattern>
+            <template>
+                <think><set name="duracion"><star/></set></think>
+                <think><set name="topic">unknown</set></think>
+                <think><set name="temp"><map><name><get name="serie"/></name>temporada<get name="temporada"/></map></set></think>
+                <!-- Operaciones previas a la insercion en el map -->
+                <modifymap>
+                    <name><get name="serie"/></name>
+                    <key>temporada<get name="temporada"/></key>             
+                    <value><srai>code_ar<get name="temp"/><get name="titulo"/><get name="duracion"/></srai></value>
+                </modifymap>
+                Este capitulo ya esta disponible en la plataforma
+            </template>
+        </category>
+    </topic>
+
+
+    <!-- Regla para introducir una temporada a una serie -->
+    <category>
+        <pattern> Introduce la temporada <set>number</set> de * </pattern>
+        <template>
+            <think><set name="serie"><star index="2"/></set></think>
+            <think><set name="temporada"><star index="1"/></set></think>
+            Vamos a ello
+            <addtomap>
+                <name><get name="serie"/></name>
+                <key>temporada<get name="temporada"/></key> 
+                <value></value>
+            </addtomap>
+            Listo, ¿quieres aniadir algun capitulo ?<think><set name="topic">nuevo_cap</set></think>   
+        </template>   
+    </category>
+
+    <topic name ="nuevo_cap">
+        <category>
+            <pattern> Si ^ </pattern>
+            <template>
+               Dime el nombre del capitulo
+               <think><set name="topic">titcap</set></think>
+            </template>
+        </category>
+        <category>
+            <pattern> No ^ </pattern>
+            <template>
+                Como quieras, Si en algun momento quieres hacerlo basta con que lo digas.
+                <think><set name="topic">unknown</set></think>
+            </template>
+        </category>
+    </topic>
+
+    <!-- Regla para introducir una serie -->
+    <category>
+        <pattern>Aniade una nueva serie </pattern>
+        <template>De acuerdo, pero necesito que me ayudes, crea un archivo con la extension txt en la carpeta maps cuyo nombre sea el nombre de la serie que deseas aniadir.Cuando lo tengas reiniciame y me dices que quieres completar la informacion sobre la serie</template>
+    </category>
+
+    <!-- Regla completar la informacion de una serie -->
+    <category>
+        <pattern> ^ completa(r) (la) informacion sobre (la serie) *</pattern>
+        <template>
+            <think><set name="topic">plataforma</set></think>
+            <think><set name="serie"><star index="2"/></set></think>
+            Perfecto, te haré unas cuestiones sobre la serie. ¿En que plataforma se encuentra? 
+        </template>
+    </category>
+
+    <topic name="plataforma">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                 <think><set name="topic">genero</set></think>
+                 <addtoset>
+                    <name>series<star/></name>
+                    <key><get name="serie"/></key>
+                 </addtoset>
+                 Dime el genero de la serie
+            </template>
+        </category>
+    </topic>
+
+    <topic name="genero">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                 <think><set name="topic">idioma</set></think>
+                 <think><set name="genero"><srai>code_ar <star/></srai></set></think>
+                 <addtomap>
+                    <name><get name="serie"/></name>
+                    <key>genero</key> 
+                    <value><get name="genero"/></value>
+                 </addtomap>
+                 ¿En que idiomas esta disponible su audio?
+            </template>
+        </category>
+    </topic>
+
+
+    <topic name="idioma">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                 <think><set name="topic">subtitulos</set></think>
+                 <think><set name="idiomas"><srai>code_ar <star/></srai></set></think>
+                 <addtomap>
+                    <name><get name="serie"/></name>
+                    <key>idiomas</key> 
+                    <value><get name="idiomas"/></value>
+                 </addtomap>
+                 ¿Y los subtitulos?
+            </template>
+        </category>
+    </topic>
+
+
+    <topic name="subtitulos">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                 <think><set name="topic">sinopsis</set></think>
+                 <think><set name="subtitulos"><srai>code_ar <star/></srai></set></think>
+                 <addtomap>
+                    <name><get name="serie"/></name>
+                    <key>subtitulos</key> 
+                    <value><get name="subtitulos"/></value>
+                 </addtomap>
+                 ¿De que va la serie?
+            </template>
+        </category>
+    </topic>
+
+
+    <topic name="sinopsis">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                 <think><set name="topic">web</set></think>
+                 <think><set name="sinopsis"><srai>code <star/></srai></set></think>
+                 <addtomap>
+                    <name><get name="serie"/></name>
+                    <key>sinopsis</key> 
+                    <value><get name="sinopsis"/></value>
+                 </addtomap>
+                 Dime su pagina web
+            </template>
+        </category>
+    </topic>
+
+    <topic name="web">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                 <think><set name="topic">add_temp</set></think>
+                 <think><set name="web"><star/></set></think>
+                 <addtomap>
+                    <name><get name="serie"/></name>
+                    <key>web</key> 
+                    <value><get name="web"/></value>
+                 </addtomap>
+                 Listo, ¿quieres aniadir alguna temporada?
+            </template>
+        </category>
+        </topic>
+        <topic name="add_temp">
+        <category>
+            <pattern> Si ^ </pattern>
+            <template>
+               Dime el numero de la temporada
+               <think><set name="topic">n_temp</set></think>
+            </template>
+        </category>
+        <category>
+            <pattern> No ^ </pattern>
+            <template>
+                Como quieras, Si en algun momento quieres hacerlo basta con que lo digas.
+                <think><set name="topic">unknown</set></think>
+            </template>
+        </category>
+    </topic>
+
+    <topic name="n_temp">
+        <template>
+        <think><set name="numerotemp"><star/></set></think>
+            <addtomap>
+                <name><get name="serie"/></name>
+                <key>temporada<get name="numerotemp"/></key> 
+                <value></value>
+            </addtomap>
+            Listo, ¿quieres aniadir algun capitulo ?<think><set name="topic">nuevo_cap</set></think>  
+        </template>
+    </topic>
+
+
+
+</aiml>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

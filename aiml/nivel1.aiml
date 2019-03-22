@@ -59,7 +59,7 @@
                 <modifymap>
                     <name><get name="serie"/></name>
                     <key>temporada<get name="temporada"/></key>             
-                    <value><srai>code_ar<get name="temp"/><get name="titulo"/><get name="duracion"/></srai></value>
+                    <value><srai>code_ar <get name="temp"/><get name="titulo"/><get name="duracion"/></srai></value>
                 </modifymap>
                 Este capitulo ya esta disponible en la plataforma
             </template>
@@ -69,11 +69,19 @@
 
     <!-- Regla para introducir una temporada a una serie -->
     <category>
-        <pattern> Introduce la temporada <set>number</set> de * </pattern>
+        <pattern> Introduce una temporada de * </pattern>
         <template>
-            <think><set name="serie"><star index="2"/></set></think>
-            <think><set name="temporada"><star index="1"/></set></think>
-            Vamos a ello
+            <think><set name="serie"><star/></set></think>
+            <think><set name="topic">nueva_temporada</set></think>
+            Vamos a ello, dime el numero de la temporada.
+        </template>
+    </category>
+
+    <topic name ="nueva_temporada">
+    <category>
+        <pattern><set>number</set></pattern>
+        <template>
+        <think><set name="temporada"><star/></set></think>
             <addtomap>
                 <name><get name="serie"/></name>
                 <key>temporada<get name="temporada"/></key> 
@@ -82,6 +90,8 @@
             Listo, ¿quieres aniadir algun capitulo ?<think><set name="topic">nuevo_cap</set></think>   
         </template>   
     </category>
+    </topic>
+
 
     <topic name ="nuevo_cap">
         <category>
@@ -217,7 +227,7 @@
             <pattern> Si ^ </pattern>
             <template>
                Dime el numero de la temporada
-               <think><set name="topic">n_temp</set></think>
+               <think><set name="topic">nueva_temporada</set></think>
             </template>
         </category>
         <category>
@@ -228,21 +238,6 @@
             </template>
         </category>
     </topic>
-
-    <topic name="n_temp">
-        <template>
-        <think><set name="numerotemp"><star/></set></think>
-            <addtomap>
-                <name><get name="serie"/></name>
-                <key>temporada<get name="numerotemp"/></key> 
-                <value></value>
-            </addtomap>
-            Listo, ¿quieres aniadir algun capitulo ?<think><set name="topic">nuevo_cap</set></think>  
-        </template>
-    </topic>
-
-
-
 </aiml>
 
 

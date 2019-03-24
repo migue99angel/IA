@@ -2,7 +2,7 @@
 <aiml version="2.0">
     <!-- Regla para pedir la descripción de una serie -->
     <category>
-        <pattern> De que va (la serie) <set>seriesnetflix</set> </pattern>
+        <pattern> De que va (la serie)[<set>seriesnetflix</set> <set>seriesprime</set>]</pattern>
         <template>
             <srai>decode <map><name><star/></name>sinopsis</map></srai>
         </template>
@@ -13,18 +13,7 @@
             La serie <star/> no está en el catálogo.
         </template>
     </category>
-        <category>
-        <pattern> De que va (la serie) <set>seriesprime</set> </pattern>
-        <template>
-            <srai>decode <map><name><star/></name>sinopsis</map></srai>
-        </template>
-    </category>
-    <category>
-        <pattern> De que va (la serie) * </pattern>
-        <template>
-            La serie <star/> no está en el catálogo.
-        </template>
-    </category>
+
         <!-- Regla para introducir un capitulo de una serie -->
     <category>
     <pattern> Introduce un nuevo capitulo de la temporada <set>number</set> de * </pattern>
@@ -239,58 +228,3 @@
         </category>
     </topic>
 </aiml>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

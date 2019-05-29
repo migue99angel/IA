@@ -69,32 +69,36 @@ int Hor(int jugador, const Environment &estado){
       for(int j=0;j<7;j++){
          if(estado.See_Casilla(i,j)==jugador || estado.See_Casilla(i,j)==boom){
             consecutivas++;
-            if(consecutivas == 1){
-               valor += 5;
-            }
-            else if(consecutivas == 2){
-               valor += 10;
+            if(consecutivas == 2){
+               valor += 2*consecutivas;
             }
             else if(consecutivas == 3){
-               valor += 15;
+               valor += 4*consecutivas;
             }
+            else 
+                valor += consecutivas;
          }
-         else{
+         else if(estado.See_Casilla(i,j)==adv || estado.See_Casilla(i,j)==boom_adv){
+            
+            if(consecutivas == 2)
+               valor -= 2*consecutivas;
+            
+            else if(consecutivas == 3)
+               valor -= 4*consecutivas;
+            else 
+                valor -= consecutivas;
             consecutivas=0;
-            if(consecutivas == 1){
-               valor -= 5;
-            }
-            else if(consecutivas == 2){
-               valor -= 10;
-            }
-            else if(consecutivas == 3){
-               valor -= 15;
-            }
+
          }
+         else 
+            consecutivas=0;
       }
+      consecutivas=0;
    }
    return valor;
 }
+
+
 int Ver(int jugador, const Environment &estado){
    int valor=0, consecutivas=0, boom, adv,boom_adv;
    if(jugador==1){
@@ -111,108 +115,126 @@ int Ver(int jugador, const Environment &estado){
       for(int j=0;j<7;j++){
          if(estado.See_Casilla(j,i)==jugador || estado.See_Casilla(j,i)==boom){
             consecutivas++;
-            if(consecutivas == 1){
-               valor += 5;
-            }
-            else if(consecutivas == 2){
-               valor += 10;
+             if(consecutivas == 2){
+               valor += 2*consecutivas;
             }
             else if(consecutivas == 3){
-               valor += 15;
+               valor += 4*consecutivas;
             }
+            else
+                valor += consecutivas;
          }
-         else{
+         else if(estado.See_Casilla(j,i)==adv || estado.See_Casilla(j,i)==boom_adv){
+            if(consecutivas == 2)
+               valor -= 2*consecutivas;
+            
+            else if(consecutivas == 3)
+               valor -= 4*consecutivas;
+            else 
+                valor -= consecutivas;   
+
             consecutivas=0;
-            if(consecutivas == 1){
-               valor -= 5;
-            }
-            else if(consecutivas == 2){
-               valor -= 10;
-            }
-            else if(consecutivas == 3){
-               valor -= 15;
-            }
          }
+         else
+            consecutivas=0;
       }
+      consecutivas=0;
    }
    return valor;
 }
-
-int CompruebaDiagonal(int jugador, const Environment &estado){
-   int puntuacion = 0, seguidas = 0, bomba, enemigo, bomba_enemigo;
+int DigIzqDer(int jugador, const Environment &estado){
+     int valor = 0, consecutivas = 0, boom, adv, boom_adv;
     if(jugador == 1){
-        bomba = 4;
-        enemigo = 2;
-        bomba_enemigo = 5;
+        boom = 4;
+        adv = 2;
+        boom_adv = 5;
     }
     else{
-        bomba = 5;
-        enemigo = 1;
-        bomba_enemigo = 4;
+        boom = 5;
+        adv = 1;
+        boom_adv = 4;
     }
 
     // Derecha-abajo / izquierda-arriba.
     for(int i = 0; i < 4; i++) {
-        for(int j = 3; j < 7; j++) {
-            for(int k = 0; k < 4; k++) {
-                if(estado.See_Casilla(i+k,j-k) == jugador || estado.See_Casilla(i+k,j-k) == bomba) {
-                    seguidas++;
-                    if(seguidas == 2)
-                        puntuacion = puntuacion + 2 * seguidas;
-                    else if(seguidas == 3)
-                        puntuacion = puntuacion + 4 * seguidas;
-                    else
-                        puntuacion += seguidas;
-                }
-                else if(estado.See_Casilla(i+k,j-k) == enemigo || estado.See_Casilla(i+k,j-k) == bomba_enemigo){
-                    if(seguidas == 2)
-                        puntuacion = puntuacion - 2 * seguidas;
-                    else if(seguidas == 3)
-                        puntuacion = puntuacion - 4 * seguidas;
-                    else
-                        puntuacion -= seguidas;
-                    seguidas = 0;
-                }
-                else {
-                    seguidas = 0;
-                }
-            }
-            seguidas = 0;
-        }
-    }
-
-    // Derecha-arriba / izquierda-abajo.
-    for(int i = 0; i < 4; i++) {
         for(int j = 0; j < 4; j++) {
             for(int k = 0; k < 4; k++) {
-                if(estado.See_Casilla(j+k,i+k) == jugador || estado.See_Casilla(j+k,i+k) == bomba) {
-                    seguidas++;
-                    if(seguidas == 2)
-                        puntuacion = puntuacion + 2 * seguidas;
-                    else if(seguidas == 3)
-                        puntuacion = puntuacion + 4 * seguidas;
+                if(estado.See_Casilla(j+k,i+k) == jugador || estado.See_Casilla(j+k,i+k) == boom) {
+                    consecutivas++;
+                    if(consecutivas == 2)
+                        valor += 2 * consecutivas;
+                    else if(consecutivas == 3)
+                        valor +=  4 * consecutivas;
                     else
-                        puntuacion += seguidas;
+                        valor += consecutivas;
                 }
-                else if(estado.See_Casilla(j+k,i+k) == enemigo || estado.See_Casilla(j+k,i+k) == bomba_enemigo){
-                    if(seguidas == 2)
-                        puntuacion = puntuacion - 2 * seguidas;
-                    else if(seguidas == 3)
-                        puntuacion = puntuacion - 4 * seguidas;
+                else if(estado.See_Casilla(j+k,i+k) == adv || estado.See_Casilla(j+k,i+k) == boom_adv){
+                    if(consecutivas == 2)
+                        valor -=  2 * consecutivas;
+                    else if(consecutivas == 3)
+                        valor -=  4 * consecutivas;
                     else
-                        puntuacion -= seguidas;
-                    seguidas = 0;
+                        valor -= consecutivas;
+                    consecutivas = 0;
                 }
                 else {
-                    seguidas = 0;
+                    consecutivas = 0;
                 }
             }
-            seguidas = 0;
+            consecutivas = 0;
         }
     }
 
-    return puntuacion;
+   return valor;
 }
+
+int DigDerIzq(int jugador, const Environment &estado){
+   int valor = 0, consecutivas = 0, boom, adv, boom_adv;
+    if(jugador == 1){
+        boom = 4;
+        adv = 2;
+        boom_adv = 5;
+    }
+    else{
+        boom = 5;
+        adv = 1;
+        boom_adv = 4;
+    }
+
+    // Derecha-abajo / izquierda-arriba.
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 7; j++) {
+            for(int k = 0; k < 4; k++) {
+                if(estado.See_Casilla(i+k,j-k) == jugador || estado.See_Casilla(i+k,j-k) == boom) {
+                    consecutivas++;
+                    if(consecutivas == 2)
+                        valor += 2 * consecutivas;
+                    else if(consecutivas == 3)
+                        valor +=  4 * consecutivas;
+                    else
+                        valor += consecutivas;
+                }
+                else if(estado.See_Casilla(i+k,j-k) == adv || estado.See_Casilla(i+k,j-k) == boom_adv){
+                    if(consecutivas == 2)
+                        valor -=  2 * consecutivas;
+                    else if(consecutivas == 3)
+                        valor -=  4 * consecutivas;
+                    else
+                        valor -= consecutivas;
+                    consecutivas = 0;
+                }
+                else {
+                    consecutivas = 0;
+                }
+            }
+            consecutivas = 0;
+        }
+    }
+
+   return valor;
+}
+
+
 
 double MiHeuristica(int jugador,const Environment &estado){
 
@@ -224,11 +246,14 @@ double MiHeuristica(int jugador,const Environment &estado){
 
       puntosAdv += Hor(adv,estado);
       puntosAdv += Ver(adv,estado);
-      puntosAdv += CompruebaDiagonal(adv,estado);
+      puntosAdv += DigDerIzq(adv,estado);
+      puntosAdv += DigIzqDer(adv,estado);
 
       puntosJug += Hor(jugador,estado);
       puntosJug += Ver(jugador,estado);
-      puntosJug += CompruebaDiagonal(jugador,estado);
+      puntosJug += DigDerIzq(jugador,estado);
+      puntosJug += DigIzqDer(jugador,estado);
+
       return (double) (puntosAdv - puntosJug );
 
 }
@@ -312,7 +337,7 @@ Environment::ActionType Player::Think(){
 
    alpha = menosinf;
    beta = masinf;
-   valor = alphabeta(actual_, jugador_, PROFUNDIDAD_ALFABETA, alpha, beta, accion,numNodos);
+   valor = alphabeta(actual_, jugador_, PROFUNDIDAD_ALFABETA, alpha, beta, accion,1,numNodos);
    cout << "Valor: " << valor << "  Accion elegida: " << actual_.ActionStr(accion) << " Nodos evaludos: " << numNodos << endl;
 
     // Opcion: Poda AlfaBeta
@@ -350,7 +375,7 @@ Environment::ActionType Player::Think(){
 
     //--------------------- AQUI EMPIEZA LA PARTE A REALIZAR POR EL ALUMNO ------------------------------------------------
 
-double Player::alphabeta(const Environment & T, int jugador, int prof, double alpha, double beta, Environment::ActionType & accion, int & numNodos){
+double Player::alphabeta(const Environment & T, int jugador, int prof, double alpha, double beta, Environment::ActionType & accion,int max, int & numNodos){
    bool acciones[8];
    double value;
    int last_act = -1;
@@ -360,14 +385,13 @@ double Player::alphabeta(const Environment & T, int jugador, int prof, double al
         return Valoracion(T, jugador);
     }
 
-    
     Environment::ActionType acc_ant;
     Environment hijo = T.GenerateNextMove(last_act);
     int nHijos = T.possible_actions(acciones);
 
-    if (jugador == 1) {
+    if (max==1) {
         for (int i = 0; i < nHijos; i++){
-            value = alphabeta(hijo, 0, prof - 1, alpha, beta, acc_ant, numNodos);
+            value = alphabeta(hijo, jugador, prof - 1, alpha, beta, acc_ant, 0,numNodos);
             if (value > alpha){
                 alpha = value;
                 accion = static_cast <Environment::ActionType > (last_act);
@@ -382,7 +406,7 @@ double Player::alphabeta(const Environment & T, int jugador, int prof, double al
     }
     else{
         for (int i = 0; i < nHijos; i++){
-            value = alphabeta(hijo, 1, prof - 1, alpha, beta, acc_ant, numNodos);
+            value = alphabeta(hijo, jugador, prof - 1, alpha, beta, acc_ant, 1,numNodos);
             if (value < beta) {
                beta = value;
                accion = static_cast <Environment::ActionType > (last_act);

@@ -8,7 +8,7 @@ class Player{
       Player(int jug);
       Environment::ActionType Think();
       void Perceive(const Environment &env);
-	double alphabeta(const Environment & T, int jugador, int profundidad, double alpha, double beta, Environment::ActionType & accion, int & numNodos);
+	double alphabeta(const Environment & T, int jugador, int profundidad, double alpha, double beta, Environment::ActionType & accion,int max, int & numNodos);
     private:
       int jugador_;
       Environment actual_;
